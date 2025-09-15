@@ -1,15 +1,21 @@
 import whisper
+from pathlib import Path
+from config import ENCODING
 
 model = whisper.load_model("base")
 
-audio = "audioHistoria.mp3"
+audio = Path("audioHistoria.mp3")
 
-result = model.transcribe(audio, language="portuguese")
+result = model.transcribe(str(audio), language="portuguese")
 
-with open("transcriptedText.txt", "w", encoding="utf-8") as f:
+text = Path("transcriptedText.txt")
+
+probs = Path("logprob.txt")
+
+with open(text, "w", encoding=ENCODING) as f:
     for segment in result['segments']:
         f.write(segment['text'] + "\n")
     
-with open("logprob.txt", "w", encoding="utf-8") as f:
+with open(probs, "w", encoding=ENCODING) as f:
     for segment in result['segments']:
         f.write(str(segment['avg_logprob']) + "\n")
