@@ -212,3 +212,9 @@ __marimo__/
 *.flac
 *.m4a
 *.ogg
+
+#.venv
+.venv/
+
+#.Texto
+*.txt
