@@ -20,7 +20,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins = ["https://localhost:3000"],
+    allow_origins = ["https://localhost:3000", "http://localhost:5173"],
     allow_credentials = True,
     allow_methods = ["*"],
     allow_headers = ["*"],
@@ -66,6 +66,7 @@ async def createMindMap(text : str):
         1. "nodes" deve ser um array de objetos. Cada objeto deve ter:
         - "id": um ID de string único (ex: "1", "2", "a", "b").
         - "data": um objeto contendo uma chave "label" com o texto do nó (ex: {{ "label": "Meu Tópico" }}).
+        - "position": um objeto contendo duas chaves "x" e "y" do tipo float (ex: {{"x":0, "y":0}})
        
         2. "edges" deve ser um array de objetos. Cada objeto deve ter:
         - "id": um ID de string único para a aresta (ex: "e1-2").
@@ -73,13 +74,14 @@ async def createMindMap(text : str):
         - "target": o "id" (string) do nó de destino.
        
         - Crie um nó raiz (id: "1") para o tópico principal e conecte outros conceitos a ele.
+        - Tente espaçar os outros nós para que não se sobreponham.
 
         Exemplo de formato de saída:
         {{
             "nodes": [
-                {{ "id": "1", "data": {{ "label": "Tópico Principal" }} }},
-                {{ "id": "2", "data": {{ "label": "Subtópico A" }} }},
-                {{ "id": "3", "data": {{ "label": "Subtópico B" }} }}
+                {{ "id": "1", "data": {{ "label": "Tópico Principal" }}, "position": {{ "x": 250, "y": 50 }} }},
+                {{ "id": "2", "data": {{ "label": "Subtópico A" }}, "position": {{ "x": 100, "y": 150 }} }}, 
+                {{ "id": "3", "data": {{ "label": "Subtópico B" }}, "position": {{ "x": 200, "y": 150 }} }}
             ],
             "edges": [
                 {{ "id": "e1-2", "source": "1", "target": "2" }},
