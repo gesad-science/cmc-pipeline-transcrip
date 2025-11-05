@@ -98,6 +98,44 @@ form button:disabled {
     line-height: 1.6;
 }
 
+#quiz{
+    background: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+#quiz h2{
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+#quiz pre{
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: 'Georgia', serif;
+    line-height: 1.6;
+}
+
+#answers{
+    background: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+#answers h2{
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+#answers pre{
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: 'Georgia', serif;
+    line-height: 1.6;
+}
+
 #mindMap{
     background: #fff;
     padding: 25px;

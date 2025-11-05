@@ -19,7 +19,7 @@ load_dotenv()
 app = FastAPI()
 
 app.add_middleware(
-    CORSMiddleware,
+    CORSMiddleware,#Allow the use of different domains (localhost:8000\localhost:5173)
     allow_origins = ["https://localhost:3000", "http://localhost:5173"],
     allow_credentials = True,
     allow_methods = ["*"],
@@ -37,7 +37,7 @@ async def transcripton(audioFile : UploadFile):
             shutil.copyfileobj(audioFile.file, temp_file)
             temp_file_path = temp_file.name
         model = whisper.load_model("base")
-        result = await run_in_threadpool(model.transcribe, temp_file_path, language='portuguese')
+        result = await run_in_threadpool(model.transcribe, temp_file_path, language='portuguese')#tanscription is a sync function, the run_in_threadpool allows to an asyn function run normally
         for segment in result["segments"]:
             listSegments.append(segment['text'])
         text = '\n'.join(listSegments)
@@ -98,7 +98,7 @@ async def createMindMap(text : str):
         ])
         chain = prompt_template | llm | outputParser
         result = chain.invoke({"prompt" : prompt})
-        match = re.search(r"\{.*\}", result, re.DOTALL)
+        match = re.search(r"\{.*\}", result, re.DOTALL)#greedy *
         if not match:
             raise HTTPException(status_code=500, detail=f"LLM doesn't returned a valid JSON {result}")
         generatedJSON = match.group(0)
@@ -108,6 +108,75 @@ async def createMindMap(text : str):
         raise HTTPException(status_code=500, detail="LLM returned a bad formated JSON (JSONDecodeError).")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error in generating mind map: {e}")
+
+async def createQuiz(abstract : str):
+    try:
+        prompt = f"""
+        Baseado no texto a seguir, gere um questionário e um gabarito para o questionário gerado.
+
+        1. O questinário deve conter:
+        - 10 questões de múltipla escolha
+        - Cada questão possui 5 alternativas, 4 erradas e 1 correta
+        - As alternativas devem ser listadas com letras em ordem alfabética
+
+        2. Após o questionário, o gabarito a ser gerado deve conter:
+        - O número de cada questão acompanhado pela letra da alternativa certa de cada uma
+
+        Exemplo de formato de saída:
+        Questionário:
+        1. Primeira pergunta
+            a. resposta1
+            b. resposta2
+            c. resposta3
+            d. resposta4
+            e. resposta5
+        1. Primeira pergunta
+            a. resposta1
+            b. resposta2
+            c. resposta3
+            d. resposta4
+            e. resposta5
+        .
+        .
+        .
+        10. Décima pergunta
+            a. resposta1
+            b. resposta2
+            c. resposta3
+            d. resposta4
+            e. resposta5
+
+        Gabarito:
+        1. a.
+        2. e.
+        3. b.
+        .
+        .
+        .
+        10. b.
+
+        Texto pra analisar:
+        {abstract}
+        """
+        promptTemplate = ChatPromptTemplate.from_messages([
+            ("system", "Você é um assistente especializado em criar questionários de 10 questões juntamente com gabaritos a partir de um resumo."),
+            ("human", "{prompt}")
+        ])
+        chain = promptTemplate | llm | outputParser
+        result = chain.invoke({"prompt" : prompt})
+        quiz = re.search(r"Questionário:\s*(.*?)(?=\s*Gabarito:)", result, re.DOTALL)#?(lazy) ?=(lookahead)
+        answers = re.search(r"Gabarito:\s*(.*10\.\s*[a-e]\.)", result, re.DOTALL)
+        if not answers or not quiz:
+            raise HTTPException(status_code=500, detail=f"No corresponding answers or quiz: {result}")
+        dict = {}
+        dict.update({
+            "quiz" : quiz.group(1),
+            "answers" : answers.group(1)
+        })
+        return dict
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error in generating quiz: {e}")
+    
 
 @app.post("/process_audio/")
 async def processAudio(file : UploadFile = File(...)):
@@ -120,9 +189,13 @@ async def processAudio(file : UploadFile = File(...)):
 
     mindMap = await createMindMap(abstract)
 
+    quiz = await createQuiz(abstract)
+
     return{
         "abstract": abstract,
-        "mindMap": mindMap
+        "mindMap": mindMap,
+        "quiz" : quiz['quiz'],
+        "answers" :  quiz['answers']
     }
 
 if __name__ == "__main__":

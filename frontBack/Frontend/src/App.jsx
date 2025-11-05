@@ -12,6 +12,8 @@ import 'reactflow/dist/style.css'
 function App(){
     const [selectedFile, setSelectedFile] = useState(null)
     const [abstract, setAbstract] = useState("")
+    const [quiz, setQuiz] = useState("")
+    const [answers, setAnswers] = useState("")
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
     const [nodes, setNodes, onNodesChange] = useNodesState([])
@@ -44,8 +46,10 @@ function App(){
                     'Content-type':'multipart/form-data'
                 }
             })
-            const {abstract, mindMap} = response.data
+            const {abstract, mindMap, quiz, answers} = response.data
             setAbstract(abstract)
+            setQuiz(quiz)
+            setAnswers(answers)
             const initialNodes = mindMap.nodes
             const initialEdges = mindMap.edges
             setNodes(initialNodes)
@@ -60,7 +64,7 @@ function App(){
     return (
         <div id="App">
             <header>
-                <h1>Resumo e Mapa Mental de aulas</h1>
+                <h1>Gerador de Resumo, Mapa Mental e Perguntas</h1>
                 <p>Envie um arquivo de áudio (.mp3, .wav, etc.)</p>
             </header>
             <main>
@@ -95,6 +99,20 @@ function App(){
                                         <Background variant='dots' gap={12} size={1}/>
                                     </ReactFlow>
                                 </div>
+                            </div>
+                        )}
+
+                        {quiz && (
+                            <div id="quiz">
+                                <h2>Questionário:</h2>
+                                <pre>{quiz}</pre>
+                            </div>
+                        )}
+
+                        {answers && (
+                            <div id="answers">
+                                <h2>Gabarito:</h2>
+                                <pre>{answers}</pre>
                             </div>
                         )}
                     </div>
