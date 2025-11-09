@@ -20,7 +20,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,#Allow the use of different domains (localhost:8000\localhost:5173)
-    allow_origins = ["https://localhost:3000", "http://localhost:5173"],
+    allow_origins = ["http://127.0.0.1:5173", "http://localhost:5173"],
     allow_credentials = True,
     allow_methods = ["*"],
     allow_headers = ["*"],
@@ -48,11 +48,12 @@ async def transcripton(audioFile : UploadFile):
 async def createAbstract(text : str):
     try:
         prompt_template = ChatPromptTemplate.from_messages([
-            ("system", "Você é um assistente que resume transcrições de aulas."),
+            ("system", "Você é um assistente que resume transcrições, em formato de markdown, de aulas."),
             ("human", "{transcription}")
         ])
         chain = prompt_template | llm | outputParser
         result = chain.invoke({"transcription" : text})
+        print(result)
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error in generate abstract: {e}")

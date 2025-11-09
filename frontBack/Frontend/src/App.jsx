@@ -1,4 +1,5 @@
 import React, {useState} from 'react'
+import ReactMarkdown from 'react-markdown'
 import ReactFlow, {
     MiniMap,
     Controls,
@@ -80,8 +81,9 @@ function App(){
                 {abstract && (
                     <div id="resultsContainer">
                         <div id="abstract">
-                            <h2>Resumo da aula:</h2>
-                            <pre>{abstract}</pre>
+                            <div id="markdown">
+                                <ReactMarkdown>{abstract}</ReactMarkdown>
+                            </div>
                         </div>
 
                         {nodes.length > 0 && (
