@@ -42,7 +42,7 @@ function App(){
         formData.append("file", selectedFile)
 
         try{
-            const response = await axios.post("http://localhost:8000/process_audio/", formData, {
+            const response = await axios.post("/api/process_audio/", formData, {
                 headers:{
                     'Content-type':'multipart/form-data'
                 }

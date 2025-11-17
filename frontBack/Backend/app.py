@@ -11,7 +11,6 @@ from langchain_core.prompts import ChatPromptTemplate
 from pathlib import Path
 import json
 import tempfile
-import shutil
 import re
 
 load_dotenv()
@@ -33,9 +32,11 @@ async def transcripton(audioFile : UploadFile):
     try:
         listSegments = []
         temp = Path(audioFile.filename).suffix
+        content = await audioFile.read()
         with tempfile.NamedTemporaryFile(suffix=temp, delete=False) as temp_file:
-            shutil.copyfileobj(audioFile.file, temp_file)
+            temp_file.write(content)
             temp_file_path = temp_file.name
+        print(temp_file_path)
         model = whisper.load_model("base")
         result = await run_in_threadpool(model.transcribe, temp_file_path, language='portuguese')#tanscription is a sync function, the run_in_threadpool allows to an asyn function run normally
         for segment in result["segments"]:
