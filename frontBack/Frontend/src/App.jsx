@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import ReactMarkdown from 'react-markdown'
 import ReactFlow, {
-    MiniMap,
+    Position,
     Controls,
     Background,
     useNodesState,
@@ -9,19 +9,28 @@ import ReactFlow, {
 } from 'reactflow'
 import axios from 'axios'
 import 'reactflow/dist/style.css'
+import logo_gesad from './assets/logo_gesad2.png';
+import { use } from 'react'
 
 function App(){
     const [selectedFile, setSelectedFile] = useState(null)
+    const [invisible, setInvisible] = useState(false)
     const [abstract, setAbstract] = useState("")
     const [quiz, setQuiz] = useState("")
     const [answers, setAnswers] = useState("")
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
+    const [showAbstract, setShowAbstract] = useState(false)
+    const [showMindMap, setShowMindMap] = useState(false)
+    const [showQuiz, setShowQuiz] = useState(false)
+    const [showAnswers, setShowAnswers] = useState(false)
+    const [fileName, setFileName] = useState("")
     const [nodes, setNodes, onNodesChange] = useNodesState([])
     const [edges, setEdges, onEdgesChange] = useEdgesState([])
 
     const captureFile = (event) => {
         setSelectedFile(event.target.files[0])
+        setFileName(event.target.files[0].name)
     }
 
     const submitForm = async (event) => {
@@ -33,6 +42,7 @@ function App(){
         }
 
         setLoading(true)
+        setInvisible(true)
         setError(null)
         setAbstract("")
         setNodes([])
@@ -49,6 +59,7 @@ function App(){
             })
             const {abstract, mindMap, quiz, answers} = response.data
             setAbstract(abstract)
+            setShowAbstract(true)
             setQuiz(quiz)
             setAnswers(answers)
             const initialNodes = mindMap.nodes
@@ -57,69 +68,94 @@ function App(){
             setEdges(initialEdges)
 
         }catch(err){
+            setInvisible(false)
             setError("Ocurred an error: " + (err.response?.data?.detail || err.message))
         }finally{
             setLoading(false)
         }
+
+    const abstractButton = () =>{
+        setShowAbstract(true)
+    }
+
+    const mindMapButton = () =>{
+        setShowMindMap(true)
+    }
+
+    const quizButton = () =>{
+        setShowQuiz(true)
+    }
     }
     return (
         <div id="App">
             <header>
-                <h1>Gerador de Resumo, Mapa Mental e Perguntas</h1>
-                <p>Envie um arquivo de áudio (.mp3, .wav, etc.)</p>
+                <h1>MindClass</h1>
+                <p>Criador de Resumos, Mapas Mentais e Quizes a partir de áudios</p>
             </header>
             <main>
-                <form onSubmit={submitForm}>
-                    <input type="file" onChange={captureFile} accept='audio/*'/>
-                    <button type='submit' disabled={loading}>
-                        {loading ? "Processando..." : "Gerar"}
+                {!invisible && <form onSubmit={submitForm}>
+                    <div id='uploadContainer'>
+                        <input type="file" onChange={captureFile} accept='audio/*' id="ghostButton" className='invisibleButton'/>
+                        <label htmlFor="ghostButton" id='customizedButton'>Selecione o Arquivo</label>
+                        <p id='fileName'>{fileName}</p>
+                    </div>
+                    <button type='submit'>
+                        Gerar
                     </button>
                 </form>
+                }
+
+                {loading && 
+                <div id="spinnerDiv">
+                    <div className="spinner"></div>
+                    <h2>Gerando conteúdo...</h2>
+                </div>}
                 
                 {error && <div id='errorMessage'>erro: {error}</div>}
 
-                {abstract && (
-                    <div id="resultsContainer">
+                <div id="resultsContainer">
+                    {!showAbstract && (
                         <div id="abstract">
                             <div id="markdown">
                                 <ReactMarkdown>{abstract}</ReactMarkdown>
                             </div>
                         </div>
+                    )}
 
-                        {nodes.length > 0 && (
-                            <div id="mindMap">
-                                <h2>Mapa mental:</h2>
-                                <div id="mindMapGenerator">
-                                    <ReactFlow 
-                                    nodes={nodes} 
-                                    edges={edges} 
-                                    onNodesChange={onNodesChange} 
-                                    onEdgesChange={onEdgesChange}
-                                    fitView>
-                                        <Controls/>
-                                        <MiniMap/>
-                                        <Background variant='dots' gap={12} size={1}/>
-                                    </ReactFlow>
-                                </div>
+                    {showMindMap && (
+                        <div id="mindMap">
+                            <h2>Mapa mental:</h2>
+                            <div id="mindMapGenerator">
+                                <ReactFlow 
+                                nodes={nodes} 
+                                edges={edges} 
+                                onNodesChange={onNodesChange} 
+                                onEdgesChange={onEdgesChange}
+                                Position
+                                fitView>
+                                    <Controls/>
+                                    <Background variant='dots' gap={12} size={1}/>
+                                </ReactFlow>
                             </div>
-                        )}
+                        </div>
+                    )}
 
-                        {quiz && (
-                            <div id="quiz">
-                                <h2>Questionário:</h2>
-                                <pre>{quiz}</pre>
-                            </div>
-                        )}
+                    {showQuiz && (
+                        <div id="quiz">
+                            <h2>Questionário:</h2>
+                            <pre>{quiz}</pre>
+                        </div>
+                    )}
 
-                        {answers && (
-                            <div id="answers">
-                                <h2>Gabarito:</h2>
-                                <pre>{answers}</pre>
-                            </div>
-                        )}
-                    </div>
-                )}
+                    {true && (
+                        <div id="answers">
+                            <h2>Gabarito:</h2>
+                            <pre>{answers}</pre>
+                        </div>
+                    )}
+                </div>
             </main>
+            <img src={logo_gesad} alt="Logo GESAD"/>
         </div>
     )
 }

@@ -6,6 +6,7 @@ import whisper
 from dotenv import load_dotenv
 from config import MODEL
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_openai import ChatOpenAI
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from pathlib import Path
@@ -26,6 +27,7 @@ app.add_middleware(
 )
 
 llm = ChatGoogleGenerativeAI(model=MODEL)
+#llm = ChatOpenAI(model="gpt-4o-mini")
 outputParser = StrOutputParser()
 
 async def transcripton(audioFile : UploadFile):
@@ -49,26 +51,30 @@ async def transcripton(audioFile : UploadFile):
 async def createAbstract(text : str):
     try:
         prompt_template = ChatPromptTemplate.from_messages([
-            ("system", "Você é um assistente que resume transcrições, em formato de markdown, de aulas."),
+            ("system", "Você é um assistente que resume transcrições, em formato de markdown, de aulas. Responsa apenas com o markdown e o título."),
             ("human", "{transcription}")
         ])
         chain = prompt_template | llm | outputParser
         result = chain.invoke({"transcription" : text})
-        print(result)
-        return result
+        match = re.search(r"\#.*", result, re.DOTALL)
+        if not match:
+            raise HTTPException(status_code=500, detail=f"Invalid abstract format: {result}")
+        return match.group(0)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error in generate abstract: {e}")
     
 async def createMindMap(text : str):
     try:
         prompt = f"""
-        Baseado no texto a seguir, gere uma estrutura de mapa mental para React Flow.
+        Baseado no texto a seguir, gere uma estrutura de mapa mental, da esquerda para a direita, para React Flow.
         O output DEVE ser um objeto JSON válido contendo duas chaves: "nodes" e "edges".
 
         1. "nodes" deve ser um array de objetos. Cada objeto deve ter:
         - "id": um ID de string único (ex: "1", "2", "a", "b").
         - "data": um objeto contendo uma chave "label" com o texto do nó (ex: {{ "label": "Meu Tópico" }}).
         - "position": um objeto contendo duas chaves "x" e "y" do tipo float (ex: {{"x":0, "y":0}})
+        - "sourcePosition": uma string que diz que ponto do nó de origem da aresta vai conectar (ex: "right")
+        - "targetPosition": uma string que diz que ponto do nó de destino da aresta vai conectar (ex: "left")
        
         2. "edges" deve ser um array de objetos. Cada objeto deve ter:
         - "id": um ID de string único para a aresta (ex: "e1-2").
@@ -81,9 +87,9 @@ async def createMindMap(text : str):
         Exemplo de formato de saída:
         {{
             "nodes": [
-                {{ "id": "1", "data": {{ "label": "Tópico Principal" }}, "position": {{ "x": 250, "y": 50 }} }},
-                {{ "id": "2", "data": {{ "label": "Subtópico A" }}, "position": {{ "x": 100, "y": 150 }} }}, 
-                {{ "id": "3", "data": {{ "label": "Subtópico B" }}, "position": {{ "x": 200, "y": 150 }} }}
+                {{ "id": "1", "data": {{ "label": "Tópico Principal" }}, "position": {{ "x": 0, "y": 200 }}, "sourcePosition": "right", "targetPosition": "left" }},
+                {{ "id": "2", "data": {{ "label": "Subtópico A" }}, "position": {{ "x": 200, "y":  0}}, "sourcePosition": "right", "targetPosition": "left" }}, 
+                {{ "id": "3", "data": {{ "label": "Subtópico B" }}, "position": {{ "x": 200, "y": 200 }}, "sourcePosition": "right", "targetPosition": "left" }}
             ],
             "edges": [
                 {{ "id": "e1-2", "source": "1", "target": "2" }},
@@ -105,6 +111,7 @@ async def createMindMap(text : str):
             raise HTTPException(status_code=500, detail=f"LLM doesn't returned a valid JSON {result}")
         generatedJSON = match.group(0)
         mindMapData = json.loads(generatedJSON)
+        print(mindMapData)
         return mindMapData
     except json.JSONDecodeError:
         raise HTTPException(status_code=500, detail="LLM returned a bad formated JSON (JSONDecodeError).")
@@ -201,4 +208,4 @@ async def processAudio(file : UploadFile = File(...)):
     }
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8000)#uvicorn app:app --host 0.0.0.0 --port 8000
