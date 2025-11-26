@@ -73,18 +73,38 @@ function App(){
         }finally{
             setLoading(false)
         }
-
-    const abstractButton = () =>{
-        setShowAbstract(true)
     }
 
-    const mindMapButton = () =>{
-        setShowMindMap(true)
+    const HandleLeftClick = () => {
+        if(showMindMap){
+            setShowMindMap(false)
+            setShowAbstract(true)
+        }
+        else if(showQuiz){
+            setShowQuiz(false)
+            setShowMindMap(true)
+        }
+        else if(showAnswers){
+            setShowAnswers(false)
+            setShowQuiz(true)
+        }
+        window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
-    const quizButton = () =>{
-        setShowQuiz(true)
-    }
+    const HandleRightClick = () => {
+        if(showAbstract){
+            setShowAbstract(false)
+            setShowMindMap(true)
+        }
+        else if(showMindMap){
+            setShowMindMap(false)
+            setShowQuiz(true)
+        }
+        else if(showQuiz){
+            setShowQuiz(false) 
+            setShowAnswers(true)
+        }
+        window.scrollTo({ top: 0, behavior: "smooth" });
     }
     return (
         <div id="App">
@@ -114,44 +134,60 @@ function App(){
                 {error && <div id='errorMessage'>erro: {error}</div>}
 
                 <div id="resultsContainer">
-                    {!showAbstract && (
+                    {showAbstract && (
+                        <>
+                        <button id='leftI'></button>
                         <div id="abstract">
                             <div id="markdown">
                                 <ReactMarkdown>{abstract}</ReactMarkdown>
                             </div>
                         </div>
+                        <button id='right' onClick={HandleRightClick}>&gt;</button> 
+                        </>
                     )}
 
                     {showMindMap && (
+                        <>
+                        <button id='left' onClick={HandleLeftClick}>&lt;</button> 
                         <div id="mindMap">
                             <h2>Mapa mental:</h2>
                             <div id="mindMapGenerator">
-                                <ReactFlow 
-                                nodes={nodes} 
-                                edges={edges} 
-                                onNodesChange={onNodesChange} 
-                                onEdgesChange={onEdgesChange}
-                                Position
-                                fitView>
-                                    <Controls/>
-                                    <Background variant='dots' gap={12} size={1}/>
+                                <ReactFlow
+                                    nodes={nodes}
+                                    edges={edges}
+                                    onNodesChange={onNodesChange}
+                                    onEdgesChange={onEdgesChange}
+                                    Position
+                                    fitView>
+                                    <Controls />
+                                    <Background variant='dots' gap={12} size={1} />
                                 </ReactFlow>
                             </div>
                         </div>
+                        <button id='right' onClick={HandleRightClick}>&gt;</button>
+                        </> 
                     )}
 
                     {showQuiz && (
+                        <>
+                        <button id='left' onClick={HandleLeftClick}>&lt;</button> 
                         <div id="quiz">
                             <h2>Questionário:</h2>
                             <pre>{quiz}</pre>
                         </div>
+                        <button id='right' onClick={HandleRightClick}>&gt;</button>
+                        </>
                     )}
 
-                    {true && (
+                    {showAnswers && (
+                        <>
+                        <button id='left' onClick={HandleLeftClick}>&lt;</button> 
                         <div id="answers">
                             <h2>Gabarito:</h2>
                             <pre>{answers}</pre>
                         </div>
+                        <button id='rightI'></button>
+                        </>
                     )}
                 </div>
             </main>
