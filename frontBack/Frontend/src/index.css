@@ -227,7 +227,6 @@ form button:hover {
 
 img{
     display: flex;
-    margin: 0 auto 0 auto;
     position: absolute;
     top: 40px;
     left: 40px;
@@ -285,4 +284,28 @@ img{
 #right:hover {
   background-color: #d35400;
   transform: translateX(5px);
+}
+
+#Home {
+  position: absolute;
+  top: 40px;
+  right: 40px;
+  align-items: center; 
+  gap: 8px; 
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  background-color: #ec5f00;
+  color: #333; 
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#Home:hover {
+  background-color: #a34100; 
+  color: white; 
+  box-shadow: 0 6px 12px rgba(0, 123, 255, 0.3);
 }

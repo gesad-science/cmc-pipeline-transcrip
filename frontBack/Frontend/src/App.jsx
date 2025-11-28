@@ -10,7 +10,7 @@ import ReactFlow, {
 import axios from 'axios'
 import 'reactflow/dist/style.css'
 import logo_gesad from './assets/logo_gesad2.png';
-import { use } from 'react'
+import { TiHome } from 'react-icons/ti';
 
 function App(){
     const [selectedFile, setSelectedFile] = useState(null)
@@ -52,7 +52,7 @@ function App(){
         formData.append("file", selectedFile)
 
         try{
-            const response = await axios.post("/api/process_audio/", formData, {
+            const response = await axios.post("http://10.134.11.139:8000/process_audio/", formData, {
                 headers:{
                     'Content-type':'multipart/form-data'
                 }
@@ -106,6 +106,22 @@ function App(){
         }
         window.scrollTo({ top: 0, behavior: "smooth" });
     }
+
+    const handleHome = () => {
+        setSelectedFile(null)
+        setFileName("")
+        setAbstract("")
+        setShowAbstract(false)
+        setInvisible(false)
+        setNodes([])
+        setEdges([])
+        setShowMindMap(false)
+        setQuiz("")
+        setShowQuiz(false)
+        setAnswers("")
+        setAnswers(false)
+        setShowAnswers(false)
+    }
     return (
         <div id="App">
             <header>
@@ -120,7 +136,7 @@ function App(){
                         <p id='fileName'>{fileName}</p>
                     </div>
                     <button type='submit'>
-                        Gerar
+                        Começar
                     </button>
                 </form>
                 }
@@ -128,7 +144,7 @@ function App(){
                 {loading && 
                 <div id="spinnerDiv">
                     <div className="spinner"></div>
-                    <h2>Gerando conteúdo...</h2>
+                    <h2>Criando conteúdo...</h2>
                 </div>}
                 
                 {error && <div id='errorMessage'>erro: {error}</div>}
@@ -192,6 +208,9 @@ function App(){
                 </div>
             </main>
             <img src={logo_gesad} alt="Logo GESAD"/>
+            <button id='Home' onClick={handleHome}>
+                <TiHome size={22}/>
+            </button>
         </div>
     )
 }

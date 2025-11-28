@@ -20,7 +20,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,#Allow the use of different domains (localhost:8000\localhost:5173)
-    allow_origins = ["http://127.0.0.1:5173", "http://localhost:5173"],
+    allow_origins = ["http://127.0.0.1:5173", "http://localhost:5173", "http://192.168.0.25:5173", "http://10.134.11.139:5173"],
     allow_credentials = True,
     allow_methods = ["*"],
     allow_headers = ["*"],
@@ -38,7 +38,6 @@ async def transcripton(audioFile : UploadFile):
         with tempfile.NamedTemporaryFile(suffix=temp, delete=False) as temp_file:
             temp_file.write(content)
             temp_file_path = temp_file.name
-        print(temp_file_path)
         model = whisper.load_model("base")
         result = await run_in_threadpool(model.transcribe, temp_file_path, language='portuguese')#tanscription is a sync function, the run_in_threadpool allows to an asyn function run normally
         for segment in result["segments"]:
@@ -111,7 +110,6 @@ async def createMindMap(text : str):
             raise HTTPException(status_code=500, detail=f"LLM doesn't returned a valid JSON {result}")
         generatedJSON = match.group(0)
         mindMapData = json.loads(generatedJSON)
-        print(mindMapData)
         return mindMapData
     except json.JSONDecodeError:
         raise HTTPException(status_code=500, detail="LLM returned a bad formated JSON (JSONDecodeError).")
