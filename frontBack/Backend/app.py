@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.concurrency import run_in_threadpool
 import whisper
 from dotenv import load_dotenv
-from config import MODEL
+#from config import MODEL
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_openai import ChatOpenAI
 from langchain_core.output_parsers import StrOutputParser
@@ -18,9 +18,9 @@ import os
 
 load_dotenv()
 
-auth_ngrok = os.getenv("NGROK_AUTH_TOKEN", "fake auth")
+#auth_ngrok = os.getenv("NGROK_AUTH_TOKEN", "fake auth")
 
-ngrok.set_auth_token(auth_ngrok)
+#ngrok.set_auth_token(auth_ngrok)
 app = FastAPI()
 
 app.add_middleware(
@@ -210,7 +210,7 @@ async def processAudio(file : UploadFile = File(...)):
         "answers" :  quiz['answers']
     }
 
-public_url = ngrok.connect(addr="8000", proto="http", domain="confutable-marybeth-throatily.ngrok-free.dev")
+#public_url = ngrok.connect(addr="8000", proto="http", domain="confutable-marybeth-throatily.ngrok-free.dev")
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)#uvicorn app:app --host 0.0.0.0 --port 8000
