@@ -5,5 +5,22 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "openai-whisper>=20250625",
+    "fastapi==0.119.1",
+    "uvicorn==0.38.0",
+    "langchain==0.3.27",
+    "langchain-community==0.3.30",
+    "langchain-google-genai==2.1.12",
+    "openai-whisper==20250625",
+    "torch==2.8.0",
+    "numpy==2.2.6",
+    "python-dotenv==1.1.1",
+    "python-multipart>=0.0.20",
+    "langchain-openai>=0.3.35",
+    "pyngrok>=7.5.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.1",
+    "ruff>=0.14.5",
 ]

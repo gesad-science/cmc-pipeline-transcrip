@@ -1,3 +1,5 @@
 # cmc-pipeline-transcrip
 ## Pipeline:
-Audio.mp3 -> 1 step: intelligent transcription -> transcriptedText.txt -> 2 step: Convertion into mindmap Mermaid code with LLM -> Code od mindmap -> 3 step: Visualization -> Mindmap
+Frontend: Input audio and it'll return the image of the mindmap with/without the abstract of the audio (React)
+
+Backend: audio -> transcriptor -> txt of the audio -> LLM service -> abstract in txt of the audio -> LLM service -> JSON of the abstract to React-flow generate the mindmap (Python)

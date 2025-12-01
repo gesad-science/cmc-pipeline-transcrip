@@ -1,0 +1,311 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+ul, ol {
+  padding-left: 20px;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background: linear-gradient(#091ab7e5, #ff6f08ea);
+    min-height: 100vh;
+    color: #dedede;
+}
+
+#App{
+    padding: 20px;
+    min-height: 100vh;
+    top: 0px;
+}
+
+header{
+    text-align: center;
+    margin-bottom: 100px;
+}
+
+header h1{
+    font-size: 50px;
+}
+
+header p{
+    font-size: 20px;
+}
+
+main{
+    position: relative;
+    top: 10%;
+}
+
+form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 70vh;
+    gap: 30px;
+    margin: 0 auto 30px auto;
+    background: #ffffff;
+    border: 2px solid #c5c4c4;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+#uploadContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.invisibleButton{
+    display: none;
+}
+
+#customizedButton{
+    background-color: #3498db;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin: 0 auto 0 auto;
+}
+
+#customizedButton:hover{
+    background-color: #2980b9;
+}
+
+#fileName{
+    color: #000;
+    font-style: italic;
+}
+
+form button {
+    padding: 10px 20px;
+    font-size: 25px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+form button:hover {
+    background-color: #2980b9;
+}
+
+#spinnerDiv{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.spinner {
+  border: 3px solid rgba(255, 255, 255, 0.3); 
+  border-radius: 50%;
+  border-top: 3px solid white; 
+  width: 40px;
+  height: 40px;
+  animation: girar 1s linear infinite;
+  display: inline-block;
+}
+
+@keyframes girar {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+#errorMessage {
+    text-align: center;
+    font-size: 16px;
+    color: #e74c3c;
+    background: #fbeae8;
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid #e74c3c;
+}
+
+#resultsContainer {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 100px;
+    justify-content: center; 
+}
+
+#abstract{
+    background: #fff;
+    width: 150vh;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+#markdown {
+  font-family: Arial, sans-serif;
+  line-height: 1.7;
+  color: #333;
+}
+#markdown h1 {
+  font-size: 2em;
+  color: #1a1a1a;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 10px;
+}
+#markdown h2 {
+  font-size: 1.5em;
+  border-bottom: 2px solid #f0f0f0;
+  color: #2a2a2a;
+  margin-top: 24px;
+}
+#markdown p {
+  margin-bottom: 16px;
+}
+.conteudo-markdown ul {
+  padding-left: 30px;
+  margin-bottom: 16px;
+}
+#quiz{
+    background: #fff;
+    color: #000;
+    width: 150vh;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+#quiz h2{
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+#quiz pre{
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: 'Georgia', serif;
+    line-height: 1.6;
+}
+
+#answers{
+    color: #000;
+    background: #fff;
+    width: 100vh;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+#answers h2{
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+#answers pre{
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: 'Georgia', serif;
+    line-height: 1.6;
+}
+
+#mindMap{
+    background: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    width: 150vh;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);    
+}
+
+#mindMapGenerator{
+    height: 600px; 
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+img{
+    display: flex;
+    position: absolute;
+    top: 40px;
+    left: 40px;
+    width: 50px;
+    border-radius: 10px;
+}
+
+#left {
+  margin: auto 30px auto 0;
+  width: 50px;
+  height: 50px;
+  font-size: 20px;
+  background-color: #e67e22;
+  border: none;
+  border-radius: 50px;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#leftI {
+  margin: auto 30px auto 0;
+  width: 50px;
+  height: 50px;
+  background-color: transparent;
+  border: none;
+}
+
+#left:hover {
+  background-color: #2980b9;
+  transform: translateX(-5px);
+}
+
+#rightI {
+  margin: auto 0 auto 30px;
+  width: 50px;
+  height: 50px;
+  background-color: transparent;
+  border: none;
+}
+
+#right {
+  margin: auto 0 auto 30px;
+  width: 50px;
+  height: 50px;
+  font-size: 20px;
+  background-color: #e67e22;
+  border: none;
+  border-radius: 50px;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#right:hover {
+  background-color: #d35400;
+  transform: translateX(5px);
+}
+
+#Home {
+  position: absolute;
+  top: 40px;
+  right: 40px;
+  align-items: center; 
+  gap: 8px; 
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  background-color: #ec5f00;
+  color: #333; 
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#Home:hover {
+  background-color: #a34100; 
+  color: white; 
+  box-shadow: 0 6px 12px rgba(0, 123, 255, 0.3);
+}
