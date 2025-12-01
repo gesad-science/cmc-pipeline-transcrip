@@ -52,7 +52,7 @@ function App(){
         formData.append("file", selectedFile)
 
         try{
-            const response = await axios.post("http://10.134.11.139:8000/process_audio/", formData, {
+            const response = await axios.post("http://confutable-marybeth-throatily.ngrok-free.dev/process_audio/", formData, {
                 headers:{
                     'Content-type':'multipart/form-data'
                 }

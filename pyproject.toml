@@ -16,6 +16,7 @@ dependencies = [
     "python-dotenv==1.1.1",
     "python-multipart>=0.0.20",
     "langchain-openai>=0.3.35",
+    "pyngrok>=7.5.0",
 ]
 
 [dependency-groups]

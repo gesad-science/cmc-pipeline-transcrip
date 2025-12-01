@@ -13,14 +13,19 @@ from pathlib import Path
 import json
 import tempfile
 import re
+from pyngrok import ngrok
+import os
 
 load_dotenv()
 
+auth_ngrok = os.getenv("NGROK_AUTH_TOKEN", "fake auth")
+
+ngrok.set_auth_token(auth_ngrok)
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,#Allow the use of different domains (localhost:8000\localhost:5173)
-    allow_origins = ["http://127.0.0.1:5173", "http://localhost:5173", "http://192.168.0.25:5173", "http://10.134.11.139:5173"],
+    allow_origins = ["*"],
     allow_credentials = True,
     allow_methods = ["*"],
     allow_headers = ["*"],
@@ -204,6 +209,8 @@ async def processAudio(file : UploadFile = File(...)):
         "quiz" : quiz['quiz'],
         "answers" :  quiz['answers']
     }
+
+public_url = ngrok.connect(addr="8000", proto="http", domain="confutable-marybeth-throatily.ngrok-free.dev")
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)#uvicorn app:app --host 0.0.0.0 --port 8000
