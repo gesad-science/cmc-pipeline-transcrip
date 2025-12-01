@@ -31,7 +31,7 @@ app.add_middleware(
     allow_headers = ["*"],
 )
 
-llm = ChatGoogleGenerativeAI(model=MODEL)
+llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash")
 #llm = ChatOpenAI(model="gpt-4o-mini")
 outputParser = StrOutputParser()
 
