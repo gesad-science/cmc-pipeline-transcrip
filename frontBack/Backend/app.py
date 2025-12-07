@@ -18,9 +18,9 @@ import os
 
 load_dotenv()
 
-#auth_ngrok = os.getenv("NGROK_AUTH_TOKEN", "fake auth")
+auth_ngrok = os.getenv("NGROK_AUTH_TOKEN", "fake auth")
 
-#ngrok.set_auth_token(auth_ngrok)
+ngrok.set_auth_token(auth_ngrok)
 app = FastAPI()
 
 app.add_middleware(
@@ -190,7 +190,7 @@ async def createQuiz(abstract : str):
         raise HTTPException(status_code=500, detail=f"Error in generating quiz: {e}")
     
 
-@app.post("/process_audio/")
+@app.post("/process_audio")
 async def processAudio(file : UploadFile = File(...)):
     if not file.content_type.startswith("audio/"):
         raise HTTPException(status_code=400, detail="The file uploaded must be an audio.")
@@ -210,7 +210,7 @@ async def processAudio(file : UploadFile = File(...)):
         "answers" :  quiz['answers']
     }
 
-#public_url = ngrok.connect(addr="8000", proto="http", domain="confutable-marybeth-throatily.ngrok-free.dev")
+public_url = ngrok.connect(addr="8000", proto="http", domain="postoperative-veda-imperforate.ngrok-free.dev")
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)#uvicorn app:app --host 0.0.0.0 --port 8000

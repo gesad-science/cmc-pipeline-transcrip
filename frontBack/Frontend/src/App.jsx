@@ -7,7 +7,7 @@ import ReactFlow, {
     useNodesState,
     useEdgesState,
 } from 'reactflow'
-import axios from 'axios'
+import api from './Services/api.js'
 import 'reactflow/dist/style.css'
 import logo_gesad from './assets/logo_gesad2.png';
 import { TiHome } from 'react-icons/ti';
@@ -52,11 +52,7 @@ function App(){
         formData.append("file", selectedFile)
 
         try{
-            const response = await axios.post("http://confutable-marybeth-throatily.ngrok-free.dev/process_audio/", formData, {
-                headers:{
-                    'Content-type':'multipart/form-data'
-                }
-            })
+            const response = await api.post("/process_audio", formData)
             const {abstract, mindMap, quiz, answers} = response.data
             setAbstract(abstract)
             setShowAbstract(true)
