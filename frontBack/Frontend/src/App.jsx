@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import ReactMarkdown from 'react-markdown'
 import ReactFlow, {
     Position,
@@ -25,6 +25,7 @@ function App(){
     const [showQuiz, setShowQuiz] = useState(false)
     const [showAnswers, setShowAnswers] = useState(false)
     const [fileName, setFileName] = useState("")
+    const [loadingText, setLoadingText] = useState("Criando conteúdo.")
     const [nodes, setNodes, onNodesChange] = useNodesState([])
     const [edges, setEdges, onEdgesChange] = useEdgesState([])
 
@@ -118,6 +119,28 @@ function App(){
         setAnswers(false)
         setShowAnswers(false)
     }
+
+    useEffect(() => {
+        if(!loading) return
+
+        let cont = 1
+
+        const intervalo = setInterval(() => {
+            if(cont % 3 == 0){
+                setLoadingText("Criando conteúdo.")
+            }
+            else if(cont % 3 == 1){
+                setLoadingText("Criando conteúdo..")
+            }
+            else{
+                setLoadingText("Criando conteúdo...")
+            }
+            cont++
+        }, 500)
+
+        return () => clearInterval(intervalo)
+    }, [loading])
+
     return (
         <div id="App">
             <header>
@@ -140,7 +163,7 @@ function App(){
                 {loading && 
                 <div id="spinnerDiv">
                     <div className="spinner"></div>
-                    <h2>Criando conteúdo...</h2>
+                    <h2>{loadingText}</h2>
                 </div>}
                 
                 {error && <div id='errorMessage'>erro: {error}</div>}
