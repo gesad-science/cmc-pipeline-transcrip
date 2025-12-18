@@ -24,3 +24,6 @@ MindClass is an application that receives an audio (.wav, .mp3, etc.) and return
   - npm run bulid (Creates the HTML/CSS/Javascript for the mobile application with the new features to the dist folder)
   - npx sync android (Update the android folder with the content of the dist)
   - npx cap open android (Open android studio in the android folder)
+
+- Backend folder:
+  - uvicorn app:app --host 0.0.0.0 --port 8000 (Run the server that receives audio from any type of user)
