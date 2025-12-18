@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import ReactMarkdown from 'react-markdown'
 import ReactFlow, {
     Position,
@@ -7,7 +7,7 @@ import ReactFlow, {
     useNodesState,
     useEdgesState,
 } from 'reactflow'
-import axios from 'axios'
+import api from './Services/api.js'
 import 'reactflow/dist/style.css'
 import logo_gesad from './assets/logo_gesad2.png';
 import { TiHome } from 'react-icons/ti';
@@ -25,6 +25,7 @@ function App(){
     const [showQuiz, setShowQuiz] = useState(false)
     const [showAnswers, setShowAnswers] = useState(false)
     const [fileName, setFileName] = useState("")
+    const [loadingText, setLoadingText] = useState("Criando conteúdo.")
     const [nodes, setNodes, onNodesChange] = useNodesState([])
     const [edges, setEdges, onEdgesChange] = useEdgesState([])
 
@@ -52,11 +53,7 @@ function App(){
         formData.append("file", selectedFile)
 
         try{
-            const response = await axios.post("http://confutable-marybeth-throatily.ngrok-free.dev/process_audio/", formData, {
-                headers:{
-                    'Content-type':'multipart/form-data'
-                }
-            })
+            const response = await api.post("/process_audio", formData)
             const {abstract, mindMap, quiz, answers} = response.data
             setAbstract(abstract)
             setShowAbstract(true)
@@ -122,6 +119,28 @@ function App(){
         setAnswers(false)
         setShowAnswers(false)
     }
+
+    useEffect(() => {
+        if(!loading) return
+
+        let cont = 1
+
+        const intervalo = setInterval(() => {
+            if(cont % 3 == 0){
+                setLoadingText("Criando conteúdo.")
+            }
+            else if(cont % 3 == 1){
+                setLoadingText("Criando conteúdo..")
+            }
+            else{
+                setLoadingText("Criando conteúdo...")
+            }
+            cont++
+        }, 500)
+
+        return () => clearInterval(intervalo)
+    }, [loading])
+
     return (
         <div id="App">
             <header>
@@ -144,7 +163,7 @@ function App(){
                 {loading && 
                 <div id="spinnerDiv">
                     <div className="spinner"></div>
-                    <h2>Criando conteúdo...</h2>
+                    <h2>{loadingText}</h2>
                 </div>}
                 
                 {error && <div id='errorMessage'>erro: {error}</div>}

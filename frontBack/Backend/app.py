@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.concurrency import run_in_threadpool
 import whisper
 from dotenv import load_dotenv
-from config import MODEL
+#from config import MODEL
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_openai import ChatOpenAI
 from langchain_core.output_parsers import StrOutputParser
@@ -13,12 +13,16 @@ from pathlib import Path
 import json
 import tempfile
 import re
-from pyngrok import ngrok
+from pyngrok import ngrok, conf
 import os
+from groq import Groq
 
 load_dotenv()
 
 auth_ngrok = os.getenv("NGROK_AUTH_TOKEN", "fake auth")
+pyngrok_config = conf.PyngrokConfig(auth_token=auth_ngrok)
+
+client_groq = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 ngrok.set_auth_token(auth_ngrok)
 app = FastAPI()
@@ -31,8 +35,8 @@ app.add_middleware(
     allow_headers = ["*"],
 )
 
-llm = ChatGoogleGenerativeAI(model=MODEL)
-#llm = ChatOpenAI(model="gpt-4o-mini")
+#llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash")
+llm = ChatOpenAI(model="gpt-5.1")
 outputParser = StrOutputParser()
 
 async def transcripton(audioFile : UploadFile):
@@ -43,11 +47,17 @@ async def transcripton(audioFile : UploadFile):
         with tempfile.NamedTemporaryFile(suffix=temp, delete=False) as temp_file:
             temp_file.write(content)
             temp_file_path = temp_file.name
-        model = whisper.load_model("base")
-        result = await run_in_threadpool(model.transcribe, temp_file_path, language='portuguese')#tanscription is a sync function, the run_in_threadpool allows to an asyn function run normally
-        for segment in result["segments"]:
+        #model = whisper.load_model("base")
+        #result = await run_in_threadpool(model.transcribe, temp_file_path, language='portuguese')#tanscription is a sync function, the run_in_threadpool allows to an asyn function run normally
+        text = client_groq.audio.transcriptions.create(
+            file=(temp_file_path, content),
+            model="whisper-large-v3",
+            response_format="text"
+        )
+        '''for segment in result["segments"]:
             listSegments.append(segment['text'])
         text = '\n'.join(listSegments)
+        '''
         return text
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error in the transcription: {e}")
@@ -190,7 +200,7 @@ async def createQuiz(abstract : str):
         raise HTTPException(status_code=500, detail=f"Error in generating quiz: {e}")
     
 
-@app.post("/process_audio/")
+@app.post("/process_audio")
 async def processAudio(file : UploadFile = File(...)):
     if not file.content_type.startswith("audio/"):
         raise HTTPException(status_code=400, detail="The file uploaded must be an audio.")
@@ -210,7 +220,7 @@ async def processAudio(file : UploadFile = File(...)):
         "answers" :  quiz['answers']
     }
 
-public_url = ngrok.connect(addr="8000", proto="http", domain="confutable-marybeth-throatily.ngrok-free.dev")
+public_url = ngrok.connect(addr="8000", proto="http", domain="postoperative-veda-imperforate.ngrok-free.dev", pyngrok_config=pyngrok_config).public_url
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)#uvicorn app:app --host 0.0.0.0 --port 8000
