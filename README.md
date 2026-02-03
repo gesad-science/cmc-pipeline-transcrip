@@ -4,6 +4,9 @@ that improve the understanding of what was said in the class's audio. At the mom
 a summary, a mind map and a questionnaire with 10 questions and the answers of them. All of the previous content
 is about the audio received from the user.
 
+## Pipeline:
+![Image](https://github.com/user-attachments/assets/0c004a3e-b463-406e-a647-353cdc0e782b)
+
 ## Used Technologies:
 ### Backend:
 - uvicorn: Serves to create an asynchronous server(ASGI) that runs the backend aplication.
