@@ -1,7 +1,17 @@
+.roboto-font {
+  font-family: "Roboto", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 200;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
 }
 
 ul, ol {
@@ -9,11 +19,114 @@ ul, ol {
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    background: linear-gradient(#091ab7e5, #ff6f08ea);
+    background: #0F172A;
     min-height: 100vh;
     color: #dedede;
+}
+
+#dropContainer {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto 40px auto
+}
+
+.dropzone {
+  border: 2px dashed #949494; 
+  border-radius: 16px;
+  background-color: #ffffff1c;
+  padding: 40px 20px;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease; 
+}
+
+.dropzone-active {
+  border-color: #3B82F6;     
+  background-color: #ffffff; 
+  color: #000;
+  transform: scale(1.02);    
+}
+
+.dropzone-file {
+  border-color: #10B981;     
+  background-color:#ffffff1c;
+  border-style: solid;      
+}
+
+#dropbox-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    color: #fff;
+}
+
+.iconUpload {
+    font-size: 40px;
+    margin-bottom: 10px; 
+}
+
+#iconContainer {
+    font-size: 32px;
+    background: #fff;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.textMain{
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    margin: 0;
+}
+
+.text-dragOn{
+    color: #000;
+}
+
+.subText {
+    font-size: 14px;
+    margin: 0
+}
+
+#dropbox-fileName {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 5px 0 0 0;
+}
+
+#dropbox-fileSize {
+    font-size: 12px;
+    margin: 0;
+}
+
+#removeButton {
+    margin-top: 15px;
+    padding: 6px 12px;
+    font-size: 12px;
+    color: #EF4444;
+    background-color: transparent;
+    border: 1px solid #FECACA;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#removeButton:hover {
+    margin-top: 15px;
+    padding: 6px 12px;
+    font-size: 12px;
+    color: #ffffff;
+    background-color: #ff2a2a;
+    border: 1px solid #FECACA;
+    border-radius: 6px;
+    cursor: pointer;
 }
 
 #App{
@@ -24,53 +137,75 @@ body {
 
 header{
     text-align: center;
-    margin-bottom: 10vh;
+    align-items: center;
+    margin: 13vh 0 5vh 0;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
 }
 
-header h1{
+#titulo{
+    display: flex;
+    gap: 10px;
+}
+
+#titulo img{
+    width: 100px;
+    height: 90px;
+}
+
+#titulo h1{
     font-size: 50px;
+    padding: 15px 0 20px 0;
+    text-align: center;
 }
 
 header p{
     font-size: 20px;
+    margin: 0 auto 0 auto;
+    width: 75vh;
+    text-align: center;
+    color: #a7a7a7;
+}
+
+#contents-list{
+    display: flex;
+    gap: 40px;
+    margin: 0 auto 0 auto;
+    width: 100%;
+    max-width: 600px;
+    color: #fff;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+.contents-home-value{
+    display: flex;
+    flex: 1;
+    height: 10vh;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff1c;
+    font-size: 15px;
+    font-weight: 600;
+    border: 2px solid #949494;
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+}
+
+.contents-img {
+  font-size: 25px;
 }
 
 form{
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 70vh;
-    gap: 30px;
-    margin: 20vh auto 0 auto;
-    background: #ffffff;
-    border: 2px solid #c5c4c4;
-    padding: 20px;
-    border-radius: 10px;
-}
-
-#uploadContainer{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.invisibleButton{
-    display: none;
-}
-
-#customizedButton{
-    background-color: #3498db;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
     margin: 0 auto 0 auto;
-}
-
-#customizedButton:hover{
-    background-color: #2980b9;
+    width: 100%;
+    max-width: 600px;
 }
 
 #fileName{
@@ -84,6 +219,8 @@ form button {
     font-size: 25px;
     background-color: #3498db;
     color: white;
+    width: 100%;
+    max-width: 600px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -95,7 +232,7 @@ form button:hover {
 }
 
 #spinnerDiv{
-    margin-top: 30vh;
+    margin: 40vh auto 0 auto;
     display: flex;
     width: 100%;
     justify-content: center;
@@ -119,6 +256,7 @@ form button:hover {
 
 #errorMessage {
     text-align: center;
+    margin-top: 30px;
     font-size: 16px;
     color: #e74c3c;
     background: #fbeae8;
@@ -130,15 +268,15 @@ form button:hover {
 #resultsContainer {
     display: flex;
     justify-content: center; 
+    margin-top: 20vh;
 }
 
 #abstract{
     background: #fff;
     width: 130vh;
-    min-height: auto;
-    max-height: 70vh;
-    padding: 20px;
-    border-radius: 8px;
+    height: 70vh;
+    padding: 40px;
+    border-radius: 20px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
     overflow: auto;
 }
@@ -171,11 +309,10 @@ form button:hover {
     background: #fff;
     color: #000;
     width: 130vh;
-    min-height: auto;
-    max-height: 70vh;
+    height: 70vh;
     overflow: auto;
-    padding: 25px;
-    border-radius: 8px;
+    padding: 40px;
+    border-radius: 20px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
@@ -195,10 +332,11 @@ form button:hover {
     color: #000;
     background: #fff;
     width: 100vh;
+    margin-top: 10vh;
     min-height: auto;
     max-height: 60vh;
-    padding: 25px;
-    border-radius: 8px;
+    padding: 40px;
+    border-radius: 20px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
@@ -216,8 +354,8 @@ form button:hover {
 
 #mindMap{
     background: #fff;
-    padding: 25px;
-    border-radius: 8px;
+    padding: 40px;
+    border-radius: 20px;
     width: 130vh;
     height: 70vh;
     color: #000;
@@ -228,15 +366,6 @@ form button:hover {
     height: 60vh;
     border: 1px solid #ddd;
     border-radius: 8px;
-}
-
-img{
-    display: flex;
-    position: absolute;
-    top: 40px;
-    left: 40px;
-    width: 50px;
-    border-radius: 10px;
 }
 
 #left {

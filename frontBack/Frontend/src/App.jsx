@@ -1,4 +1,5 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useCallback} from 'react'
+import {useDropzone} from 'react-dropzone'
 import ReactMarkdown from 'react-markdown'
 import ReactFlow, {
     Position,
@@ -9,8 +10,12 @@ import ReactFlow, {
 } from 'reactflow'
 import api from './Services/api.js'
 import 'reactflow/dist/style.css'
-import logo_gesad from './assets/logo_gesad2.png';
+import mindClass_logo from './Assets/mindClass_logo.png';
 import { TiHome } from 'react-icons/ti';
+import { FiDownload } from "react-icons/fi";
+import { IoDocumentText } from "react-icons/io5";
+import { RiMindMap } from "react-icons/ri";
+import { MdQuiz } from "react-icons/md";
 
 function App(){
     const [selectedFile, setSelectedFile] = useState(null)
@@ -33,6 +38,21 @@ function App(){
         setSelectedFile(event.target.files[0])
         setFileName(event.target.files[0].name)
     }
+
+    const onDropFile = useCallback((acceptedFiles) => {
+        setError(null)
+        const file = acceptedFiles[0]
+        setSelectedFile(file)
+        setFileName(file.name)
+    }, [])
+
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+        onDrop: onDropFile,
+        accept: {
+        'audio/*': ['.mp3', '.wav', '.m4a']
+        },
+        maxFiles: 1
+    });
 
     const submitForm = async (event) => {
         event.preventDefault()
@@ -143,17 +163,49 @@ function App(){
 
     return (
         <div id="App">
-            <header>
-                <h1>MindClass</h1>
-                <p>Criador de Resumos, Mapas Mentais e Quizes a partir de áudios</p>
-            </header>
             <main>
-                {!invisible && <form onSubmit={submitForm}>
-                    <div id='uploadContainer'>
-                        <input type="file" onChange={captureFile} accept='audio/*' id="ghostButton" className='invisibleButton'/>
-                        <label htmlFor="ghostButton" id='customizedButton'>Selecione o Arquivo</label>
-                        <p id='fileName'>{fileName}</p>
+                {!invisible && <header>
+                    <div id='titulo'>
+                        <img src={mindClass_logo} alt="MindClass logo" />
+                        <h1>MindClass</h1>
                     </div>
+                <p>Transforme seus áudios em conteúdos estruturados. Faça o Upload de uma aula, podcast ou qualquer tipo de áudio educativo.</p>
+                </header>
+                }
+
+                {!invisible && <div id="dropContainer">
+                    <div {...getRootProps()}
+                    className={`dropzone ${isDragActive ? 'dropzone-active' : ''} ${selectedFile ? 'dropzone-file' : ''}`}>
+                        <input {...getInputProps()}/>
+
+                        {selectedFile ? (
+                            <div id="dropbox-content">
+                                <div id='iconContainer'>🎵</div>
+                                <p id='dropbox-fileName'>{fileName}</p>
+                                <p id='dropbox-fileSize'>{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
+                                <button 
+                                onClick={(e) => { e.stopPropagation(); setSelectedFile(null); }}
+                                id="removeButton"
+                                >
+                                    Trocar arquivo
+                                </button>
+                            </div>
+                        ) : (
+                            <div id='dropbox-content'>
+                                <div className={`iconUpload ${isDragActive ? "text-dragOn" : ""}`}>
+                                    <FiDownload />
+                                </div>
+                                <p className={`textMain ${isDragActive ? "text-dragOn" : ""}`}>
+                                    {isDragActive ? "Solte o áudio aqui" : "Arraste seu áudio ou clique aqui"}
+                                </p>
+                                <p className={`subText ${isDragActive ? "text-dragOn" : ""}`}>MP3, WAV ou M4A</p>
+                            </div>  
+                        )}
+                    </div>
+                </div>
+                }
+
+                {!invisible && <form onSubmit={submitForm}>
                     <button type='submit'>
                         Começar
                     </button>
@@ -167,6 +219,28 @@ function App(){
                 </div>}
                 
                 {error && <div id='errorMessage'>erro: {error}</div>}
+
+                {!invisible && <div id="contents-list">
+                    <div className='contents-home-value'>
+                        <div className='contents-img'>
+                            <IoDocumentText />
+                        </div>
+                        <p>Resumo</p>
+                    </div>
+                    <div className='contents-home-value'>
+                        <div className='contents-img'>
+                            <RiMindMap />
+                        </div>
+                        <p>Mapa mental</p>
+                    </div>
+                    <div className='contents-home-value'>
+                        <div className='contents-img'>
+                            <MdQuiz />
+                        </div>
+                        <p>Quiz</p>
+                    </div>
+                </div>
+                }
 
                 <div id="resultsContainer">
                     {showAbstract && (
@@ -226,10 +300,9 @@ function App(){
                     )}
                 </div>
             </main>
-            <img src={logo_gesad} alt="Logo GESAD"/>
-            <button id='Home' onClick={handleHome}>
+            {invisible && !loading && <button id='Home' onClick={handleHome}>
                 <TiHome size={22}/>
-            </button>
+            </button>}
         </div>
     )
 }
