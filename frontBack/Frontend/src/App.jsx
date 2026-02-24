@@ -225,24 +225,27 @@ function App(){
                         <div className='contents-img'>
                             <IoDocumentText />
                         </div>
-                        <p>Resumo</p>
+                        <h3>Resumo</h3>
+                        <p>Descrição textual do conteúdo do áudio</p>
                     </div>
                     <div className='contents-home-value'>
                         <div className='contents-img'>
                             <RiMindMap />
                         </div>
-                        <p>Mapa mental</p>
+                        <h3>Mapa mental</h3>
+                        <p>Estrutura visual com os principais tópicos do áudio</p>
                     </div>
                     <div className='contents-home-value'>
                         <div className='contents-img'>
                             <MdQuiz />
                         </div>
-                        <p>Quiz</p>
+                        <h3>Quiz</h3>
+                        <p>Perguntas e respostas em relação ao áudio</p>
                     </div>
                 </div>
                 }
 
-                <div id="resultsContainer">
+                {invisible && !loading && <div id="resultsContainer">
                     {showAbstract && (
                         <>
                         <button id='leftI'></button>
@@ -299,6 +302,7 @@ function App(){
                         </>
                     )}
                 </div>
+                }
             </main>
             {invisible && !loading && <button id='Home' onClick={handleHome}>
                 <TiHome size={22}/>
