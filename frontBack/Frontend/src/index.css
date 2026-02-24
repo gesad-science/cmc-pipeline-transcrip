@@ -1,4 +1,4 @@
-.roboto-font {
+.roboto-font { 
   font-family: "Roboto", sans-serif;
   font-optical-sizing: auto;
   font-weight: 200;
@@ -15,119 +15,22 @@
 }
 
 body {
+    margin: 0;
     background: #0F172A;
-    max-height: 100vh;
+    min-height: 100vh;
     color: #dedede;
 }
 
-#dropContainer {
-    width: 100%;
-    max-width: 85vh;
-    margin: 0 auto 40px auto
-}
-
-.dropzone {
-  border: 2px dashed #949494; 
-  border-radius: 16px;
-  background-color: #ffffff1c;
-  padding: 40px 20px;
-  text-align: center;
-  cursor: pointer;
-  outline: none;
-  transition: all 0.3s ease; 
-}
-
-.dropzone-active {
-  border-color: #3B82F6;     
-  background-color: #ffffff; 
-  color: #000;
-  transform: scale(1.02);    
-}
-
-.dropzone-file {
-  border-color: #10B981;     
-  background-color:#ffffff1c;
-  border-style: solid;      
-}
-
-#dropbox-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    color: #fff;
-}
-
-.iconUpload {
-    font-size: 40px;
-    margin-bottom: 10px; 
-}
-
-#iconContainer {
-    font-size: 32px;
-    background: #fff;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
-
-.textMain{
-    font-size: 16px;
-    font-weight: 600;
-    color: #fff;
-    margin: 0;
-}
-
-.text-dragOn{
-    color: #000;
-}
-
-.subText {
-    font-size: 14px;
-    margin: 0
-}
-
-#dropbox-fileName {
-    font-size: 16px;
-    font-weight: 600;
-    margin: 5px 0 0 0;
-}
-
-#dropbox-fileSize {
-    font-size: 12px;
-    margin: 0;
-}
-
-#removeButton {
-    margin-top: 15px;
-    padding: 6px 12px;
-    font-size: 12px;
-    color: #EF4444;
-    background-color: transparent;
-    border: 1px solid #FECACA;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-#removeButton:hover {
-    margin-top: 15px;
-    padding: 6px 12px;
-    font-size: 12px;
-    color: #ffffff;
-    background-color: #ff2a2a;
-    border: 1px solid #FECACA;
-    border-radius: 6px;
-    cursor: pointer;
+#root {
+    min-height: 100vh;
 }
 
 #App{
-    padding: 20px;
+    display: flex;
+    justify-content: center;
     min-height: 100vh;
+    align-items: center;
+    padding: 20px;
     top: 0px;
 }
 
@@ -164,12 +67,115 @@ header p{
     color: #a7a7a7;
 }
 
+#dropContainer { /* Container da área de drop do áudio */
+    width: 100%;
+    max-width: 85vh;
+    margin: 0 auto 40px auto
+}
+
+.dropzone { /* Local do drop do áudio */
+  border: 2px dashed #949494; 
+  border-radius: 16px;
+  background-color: #ffffff1c;
+  padding: 40px 20px;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease; 
+}
+
+.dropzone-active { /* Quando o usuário tá com o áudio em cima da dropzone*/
+  border-color: #3B82F6;     
+  background-color: #ffffff; 
+  color: #000;
+  transform: scale(1.02);    
+}
+
+.dropzone-file { /* Quando o áudio é enviado ao dropzone*/ 
+  border-color: #10B981;     
+  background-color:#ffffff1c;
+  border-style: solid;      
+}
+
+#dropzone-content { /*Conteúdo do arquivo quando enviado ao dropzone*/
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+#iconContainer {
+    font-size: 32px;
+    background: #fff;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.iconUpload {
+    font-size: 40px;
+    margin-bottom: 10px; 
+}
+
+.textDropzone{
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.textDropzone-dragOn{
+    color: #000;
+}
+
+.subTextDropzone {
+    font-size: 14px;
+    margin: 0
+}
+
+#dropzone-fileName {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 5px 0 0 0;
+}
+
+#dropzone-fileSize {
+    font-size: 12px;
+    margin: 0;
+}
+
+#removeButton {
+    margin-top: 15px;
+    padding: 6px 12px;
+    font-size: 12px;
+    color: #EF4444;
+    background-color: transparent;
+    border: 1px solid #FECACA;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#removeButton:hover {
+    margin-top: 15px;
+    padding: 6px 12px;
+    font-size: 12px;
+    color: #ffffff;
+    background-color: #ff2a2a;
+    border: 1px solid #FECACA;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
 #contents-list{
     display: flex;
     gap: 40px;
     margin: 0 auto 0 auto;
     width: 100%;
-    max-width: 600px;
+    max-width: 85vh;
     color: #fff;
     justify-content: space-between;
     margin-top: 30px;
@@ -208,13 +214,7 @@ form{
     align-items: center;
     margin: 0 auto 0 auto;
     width: 100%;
-    max-width: 600px;
-}
-
-#fileName{
-    color: #000;
-    font-style: italic;
-    text-align: center;
+    max-width: 85vh;
 }
 
 form button {
@@ -223,7 +223,6 @@ form button {
     background-color: #3498db;
     color: white;
     width: 100%;
-    max-width: 600px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -235,13 +234,13 @@ form button:hover {
 }
 
 #spinnerDiv{
-    margin: 40vh auto 0 auto;
     display: flex;
     width: 100%;
     justify-content: center;
     align-items: center;
     flex-direction: column;
 }
+
 .spinner {
   border: 3px solid rgba(255, 255, 255, 0.3); 
   border-radius: 50%;
@@ -260,6 +259,8 @@ form button:hover {
 #errorMessage {
     text-align: center;
     margin-top: 30px;
+    width: 100%;
+    max-width: 85vh;
     font-size: 16px;
     color: #e74c3c;
     background: #fbeae8;
@@ -269,14 +270,17 @@ form button:hover {
 }
 
 #resultsContainer {
+    min-height: 100vh;
     display: flex;
-    justify-content: center; 
-    margin-top: 20vh;
+    justify-content: center;
+    min-height: 100vh;
+    align-items: center;
 }
 
 #abstract{
     background: #fff;
-    width: 130vh;
+    width: 100%;
+    max-width: 100vh;
     height: 70vh;
     padding: 40px;
     border-radius: 20px;
@@ -285,29 +289,33 @@ form button:hover {
 }
 
 #markdown {
-  font-family: Arial, sans-serif;
   line-height: 1.7;
   color: #333;
 }
+
 #markdown h1 {
   font-size: 2em;
   color: #1a1a1a;
   border-bottom: 2px solid #f0f0f0;
   padding-bottom: 10px;
 }
+
 #markdown h2 {
   font-size: 1.5em;
   border-bottom: 2px solid #f0f0f0;
   color: #2a2a2a;
   margin-top: 24px;
 }
+
 #markdown p {
   margin-bottom: 16px;
 }
-.conteudo-markdown ul {
+
+#markdown ul {
   padding-left: 30px;
   margin-bottom: 16px;
 }
+
 #quiz{
     background: #fff;
     color: #000;
@@ -335,7 +343,6 @@ form button:hover {
     color: #000;
     background: #fff;
     width: 100vh;
-    margin-top: 10vh;
     min-height: auto;
     max-height: 60vh;
     padding: 40px;
@@ -372,16 +379,16 @@ form button:hover {
 }
 
 #left {
-  margin: 30vh 30px 0 0;
-  width: 50px;
-  height: 50px;
-  font-size: 20px;
-  background-color: #e67e22;
-  border: none;
-  border-radius: 50px;
-  color: white;
-  cursor: pointer;
-  transition: 0.3s;
+    margin-right: 30px;
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+    background-color: #e67e22;
+    border: none;
+    border-radius: 50px;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
 #leftI {
@@ -397,16 +404,8 @@ form button:hover {
   transform: translateX(-5px);
 }
 
-#rightI {
-  margin: auto 0 auto 30px;
-  width: 50px;
-  height: 50px;
-  background-color: transparent;
-  border: none;
-}
-
 #right {
-  margin: 30vh 0 0 30px;
+  margin-left : 30px; 
   width: 50px;
   height: 50px;
   font-size: 20px;
@@ -416,6 +415,14 @@ form button:hover {
   color: white;
   cursor: pointer;
   transition: 0.3s;
+}
+
+#rightI {
+  margin: auto 0 auto 30px;
+  width: 50px;
+  height: 50px;
+  background-color: transparent;
+  border: none;
 }
 
 #right:hover {

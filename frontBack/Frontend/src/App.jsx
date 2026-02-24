@@ -179,10 +179,10 @@ function App(){
                         <input {...getInputProps()}/>
 
                         {selectedFile ? (
-                            <div id="dropbox-content">
+                            <div id="dropzone-content">
                                 <div id='iconContainer'>🎵</div>
-                                <p id='dropbox-fileName'>{fileName}</p>
-                                <p id='dropbox-fileSize'>{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
+                                <p id='dropzone-fileName'>{fileName}</p>
+                                <p id='dropzone-fileSize'>{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
                                 <button 
                                 onClick={(e) => { e.stopPropagation(); setSelectedFile(null); }}
                                 id="removeButton"
@@ -191,14 +191,14 @@ function App(){
                                 </button>
                             </div>
                         ) : (
-                            <div id='dropbox-content'>
-                                <div className={`iconUpload ${isDragActive ? "text-dragOn" : ""}`}>
+                            <div id='dropzone-content'>
+                                <div className={`iconUpload ${isDragActive ? "textDropzone-dragOn" : ""}`}>
                                     <FiDownload />
                                 </div>
-                                <p className={`textMain ${isDragActive ? "text-dragOn" : ""}`}>
+                                <p className={`textDropzone ${isDragActive ? "textDropzone-dragOn" : ""}`}>
                                     {isDragActive ? "Solte o áudio aqui" : "Arraste seu áudio ou clique aqui"}
                                 </p>
-                                <p className={`subText ${isDragActive ? "text-dragOn" : ""}`}>MP3, WAV ou M4A</p>
+                                <p className={`subTextDropzone ${isDragActive ? "textDropzone-dragOn" : ""}`}>MP3, WAV ou M4A</p>
                             </div>  
                         )}
                     </div>
