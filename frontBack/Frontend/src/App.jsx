@@ -1,5 +1,6 @@
 import React, {useEffect, useState, useCallback} from 'react'
 import {useDropzone} from 'react-dropzone'
+import {VoiceRecorder} from 'capacitor-voice-recorder'
 import ReactMarkdown from 'react-markdown'
 import ReactFlow, {
     Position,
@@ -16,6 +17,7 @@ import { FiDownload } from "react-icons/fi";
 import { IoDocumentText } from "react-icons/io5";
 import { RiMindMap } from "react-icons/ri";
 import { MdQuiz } from "react-icons/md";
+import { FaMicrophone } from "react-icons/fa";
 
 function App(){
     const [selectedFile, setSelectedFile] = useState(null)
@@ -33,11 +35,8 @@ function App(){
     const [loadingText, setLoadingText] = useState("Criando conteúdo.")
     const [nodes, setNodes, onNodesChange] = useNodesState([])
     const [edges, setEdges, onEdgesChange] = useEdgesState([])
-
-    const captureFile = (event) => {
-        setSelectedFile(event.target.files[0])
-        setFileName(event.target.files[0].name)
-    }
+    const [isRecording, serRecording] = useState(false)
+    const [audioData, setAudioData] = useState(null)
 
     const onDropFile = useCallback((acceptedFiles) => {
         setError(null)
@@ -210,6 +209,20 @@ function App(){
                         Começar
                     </button>
                 </form>
+                }
+
+                {!invisible && <div id='orLine'>
+                    <div className='recordLine'></div>
+                    <p>ou</p>
+                    <div className='recordLine'></div>
+                </div>
+                }
+
+                {!invisible && <div id='divButtonRecord'>
+                    <button id='buttonRecord'>
+                        <FaMicrophone /> Gravar Áudio
+                    </button>
+                </div>
                 }
 
                 {loading && 
