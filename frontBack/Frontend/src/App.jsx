@@ -1,6 +1,5 @@
 import React, {useEffect, useState, useCallback} from 'react'
 import {useDropzone} from 'react-dropzone'
-import {VoiceRecorder} from 'capacitor-voice-recorder'
 import ReactMarkdown from 'react-markdown'
 import ReactFlow, {
     Position,
@@ -11,17 +10,17 @@ import ReactFlow, {
 } from 'reactflow'
 import api from './Services/api.js'
 import 'reactflow/dist/style.css'
+import Recorder from './Recorder'
 import mindClass_logo from './Assets/mindClass_logo.png';
 import { TiHome } from 'react-icons/ti';
 import { FiDownload } from "react-icons/fi";
 import { IoDocumentText } from "react-icons/io5";
 import { RiMindMap } from "react-icons/ri";
-import { MdQuiz } from "react-icons/md";
+import { MdAudioFile, MdQuiz } from "react-icons/md";
 import { FaMicrophone } from "react-icons/fa";
 
 function App(){
     const [selectedFile, setSelectedFile] = useState(null)
-    const [invisible, setInvisible] = useState(false)
     const [abstract, setAbstract] = useState("")
     const [quiz, setQuiz] = useState("")
     const [answers, setAnswers] = useState("")
@@ -35,8 +34,7 @@ function App(){
     const [loadingText, setLoadingText] = useState("Criando conteúdo.")
     const [nodes, setNodes, onNodesChange] = useNodesState([])
     const [edges, setEdges, onEdgesChange] = useEdgesState([])
-    const [isRecording, serRecording] = useState(false)
-    const [audioData, setAudioData] = useState(null)
+    const [actualScreen, setActualScreen] = useState('home')
 
     const onDropFile = useCallback((acceptedFiles) => {
         setError(null)
@@ -62,7 +60,7 @@ function App(){
         }
 
         setLoading(true)
-        setInvisible(true)
+        setActualScreen('loading')
         setError(null)
         setAbstract("")
         setNodes([])
@@ -82,11 +80,45 @@ function App(){
             const initialEdges = mindMap.edges
             setNodes(initialNodes)
             setEdges(initialEdges)
+            setActualScreen('result')
 
         }catch(err){
-            setInvisible(false)
+            setActualScreen('home')
             setError("Ocurred an error: " + (err.response?.data?.detail || err.message))
         }finally{
+            setLoading(false)
+        }
+    }
+
+    const processRecordAudio = async (audioFile) => {
+        setActualScreen('loading')
+        setLoading(true)
+        setError(null)
+        setAbstract("")
+        setNodes([])
+        setEdges([])
+
+        const formData = new FormData()
+        formData.append('file', audioFile)
+
+        try{
+            const response = await api.post("/process_audio", formData)
+            const {abstract, mindMap, quiz, answers} = response.data
+            setAbstract(abstract)
+            setShowAbstract(true)
+            setQuiz(quiz)
+            setAnswers(answers)
+            const initialNodes = mindMap.nodes
+            const initialEdges = mindMap.edges
+            setNodes(initialNodes)
+            setEdges(initialEdges)
+            setActualScreen('result')
+        }
+        catch(err){
+            setActualScreen('home')
+            setError("Ocurred an error: " + (err.response?.data?.detail || err.message))
+        }
+        finally{
             setLoading(false)
         }
     }
@@ -128,14 +160,13 @@ function App(){
         setFileName("")
         setAbstract("")
         setShowAbstract(false)
-        setInvisible(false)
+        setActualScreen('home')
         setNodes([])
         setEdges([])
         setShowMindMap(false)
         setQuiz("")
         setShowQuiz(false)
         setAnswers("")
-        setAnswers(false)
         setShowAnswers(false)
     }
 
@@ -163,16 +194,16 @@ function App(){
     return (
         <div id="App">
             <main>
-                {!invisible && <header>
+                {(actualScreen === 'home' || actualScreen === 'record') && <header>
                     <div id='titulo'>
                         <img src={mindClass_logo} alt="MindClass logo" />
                         <h1>MindClass</h1>
                     </div>
-                <p>Transforme seus áudios em conteúdos estruturados. Faça o Upload de uma aula, podcast ou qualquer tipo de áudio educativo.</p>
+                <p>Transforme seus áudios em conteúdos estruturados. Faça o Upload de um áudio ou faça uma gravação a partir do microfone.</p>
                 </header>
                 }
 
-                {!invisible && <div id="dropContainer">
+                {actualScreen === 'home' && <div id="dropContainer">
                     <div {...getRootProps()}
                     className={`dropzone ${isDragActive ? 'dropzone-active' : ''} ${selectedFile ? 'dropzone-file' : ''}`}>
                         <input {...getInputProps()}/>
@@ -204,28 +235,28 @@ function App(){
                 </div>
                 }
 
-                {!invisible && <form onSubmit={submitForm}>
+                {actualScreen === 'home' && <form onSubmit={submitForm}>
                     <button type='submit'>
                         Começar
                     </button>
                 </form>
                 }
 
-                {!invisible && <div id='orLine'>
+                {actualScreen === 'home' && <div id='orLine'>
                     <div className='recordLine'></div>
                     <p>ou</p>
                     <div className='recordLine'></div>
                 </div>
                 }
 
-                {!invisible && <div id='divButtonRecord'>
-                    <button id='buttonRecord'>
+                {actualScreen === 'home' && <div id='divButtonRecord'>
+                    <button id='buttonRecord' onClick={() => setActualScreen('record')}>
                         <FaMicrophone /> Gravar Áudio
                     </button>
                 </div>
                 }
 
-                {loading && 
+                {loading &&
                 <div id="spinnerDiv">
                     <div className="spinner"></div>
                     <h2>{loadingText}</h2>
@@ -233,7 +264,7 @@ function App(){
                 
                 {error && <div id='errorMessage'>erro: {error}</div>}
 
-                {!invisible && <div id="contents-list">
+                {actualScreen === 'home' && <div id="contents-list">
                     <div className='contents-home-value'>
                         <div className='contents-img'>
                             <IoDocumentText />
@@ -258,7 +289,11 @@ function App(){
                 </div>
                 }
 
-                {invisible && !loading && <div id="resultsContainer">
+                {actualScreen === 'record' && (
+                    <Recorder onComeBack = {() => setActualScreen('home')} onSendAudio={processRecordAudio}/>
+                )}
+
+                {actualScreen === 'result' && <div id="resultsContainer">
                     {showAbstract && (
                         <>
                         <button id='leftI'></button>
@@ -317,7 +352,7 @@ function App(){
                 </div>
                 }
             </main>
-            {invisible && !loading && <button id='Home' onClick={handleHome}>
+            {actualScreen === 'result' && <button id='Home' onClick={handleHome}>
                 <TiHome size={22}/>
             </button>}
         </div>

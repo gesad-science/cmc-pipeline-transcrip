@@ -274,6 +274,160 @@ form button:hover {
     background-color: #2235619c;
 }
 
+#recorderContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 85vh;
+    width: 100%;
+    padding: 5vh 5vh;
+    background-color: #1a1a1a;
+    border: 2px solid #949494;
+    border-radius: 20px;
+}
+
+#timer{
+    font-size: 48px;
+    text-align: center;
+    margin: 1vh 0 0 0;
+}
+
+#recordStatusText{
+    font: 16px;
+    color: #595959;
+    margin-bottom: 5vh;
+}
+
+#canvasRef{
+    width: 100%;
+    height: 100px;
+    background-color: '#1e1e1e';
+    border-radius: '8px';
+    margin-bottom: 2vh;
+}
+
+#recordButtons{
+    display: flex; 
+    justify-content: center;
+    width: 100%;
+    max-width: 85vh;
+    gap: 10px; 
+}
+
+.buttonsActive:active {
+  transform: scale(0.95);
+}
+
+#startRecordButton{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    text-align: center;
+    cursor: pointer;
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50px;
+    background-color: #3498db;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#startRecordButton:hover{
+    background-color: #2980b9; 
+    transform: scale(1.05);
+}
+
+#pauseRecordButton{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 20px;
+    border: none;
+    cursor: pointer;
+    width: 50px;
+    height: 50px;
+    border-radius: 50px;
+    background-color: #f1c40f;
+}
+
+#pauseRecordButton:hover{
+    background-color: #f39c12; 
+    transform: scale(1.05);
+}
+
+#finishRecordButton{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 20px;
+    border: none;
+    cursor: pointer;
+    width: 50px;
+    height: 50px;
+    border-radius: 50px;
+    background-color: #e74c3c;
+}
+
+#finishRecordButton:hover{
+    background-color: #c0392b; 
+    transform: scale(1.05);
+}
+
+#continueRecordButton{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 20px;
+    border: none;
+    cursor: pointer;
+    width: 50px;
+    height: 50px;
+    border-radius: 50px;
+    background-color: #2ecc71;
+}
+
+#continueRecordButton:hover{
+    background-color: #27ae60; 
+    transform: scale(1.05);
+}
+
+#sendToLLMButton{
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 16px;
+    width: 50%;
+    height: 6vh;
+    border: none;
+    border-radius: 5px;
+}
+
+#discardRecordButton{
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 16px;
+    width: 50%;
+    height: 6vh;
+    background-color: #0F172A;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+}
+
 #spinnerDiv{
     display: flex;
     width: 100%;
@@ -311,10 +465,9 @@ form button:hover {
 }
 
 #resultsContainer {
-    min-height: 100vh;
+    max-height: 100vh;
     display: flex;
     justify-content: center;
-    min-height: 100vh;
     align-items: center;
 }
 
@@ -433,7 +586,7 @@ form button:hover {
 }
 
 #leftI {
-    margin: auto 30px auto 0;
+    margin: 0 30px 0 0;
     width: 50px;
     height: 50px;
     background-color: transparent;
