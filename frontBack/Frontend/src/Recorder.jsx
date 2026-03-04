@@ -1,5 +1,4 @@
 import React, {useEffect, useState, useRef} from 'react'
-import {VoiceRecorder} from 'capacitor-voice-recorder'
 import { FaMicrophone } from "react-icons/fa";
 import { CiPause1 } from "react-icons/ci";
 import { FaStop } from "react-icons/fa";
@@ -13,14 +12,19 @@ const Recorder = ({onComeBack, onSendAudio}) => {
     const [recordStatus, setRecordStatus] = useState('idle')
     const [seconds, setSeconds] = useState(0)
     const [audioData, setAudioData] = useState(null)
+    const [audioMimeType, setAudioMimeType] = useState('audio/webm')
     const [text, setText] = useState("Pronto para gravar")
 
     const timerRef = useRef(null)
     const canvasRef = useRef(null)
+    const mediaStreamRef = useRef(null)
+
     const audioContextRef = useRef(null)
     const analyzerRef = useRef(null)
-    const mediaStreamRef = useRef(null)
     const animationRef = useRef(null)
+
+    const mediaRecorderRef = useRef(null)
+    const audioChunksRef = useRef([])
 
     useEffect(() => {
         return () => finishAll(true)
@@ -36,28 +40,6 @@ const Recorder = ({onComeBack, onSendAudio}) => {
         }
         return () => clearInterval(timerRef.current)
     }, [recordStatus])
-
-    const startSetupWebAudio = async () => {
-        try{
-            const stream = await navigator.mediaDevices.getUserMedia({audio : true})
-            mediaStreamRef.current = stream
-
-            const audioContext = window.AudioContext || window.webkitAudioContext
-            const audioCtx = new audioContext()
-            audioContextRef.current = audioCtx
-
-            const analyzer = audioCtx.createAnalyser()
-            analyzer.fftSize = 256
-            analyzerRef.current = analyzer
-
-            const source = audioCtx.createMediaStreamSource(stream)
-            source.connect(analyzer)
-
-            drawSpec()
-        }catch(err){
-            console.error("Error in web audio:", err)
-        }
-    }
 
     const drawSpec = () => {
         if (!analyzerRef.current || !canvasRef.current) return
@@ -92,84 +74,120 @@ const Recorder = ({onComeBack, onSendAudio}) => {
 
     const startRecord = async () => {
         try{
-            const canRecord = await VoiceRecorder.canDeviceVoiceRecord()
-            if(!canRecord.value){
-                return alert("Dispositivo nãao suporta gravação!")
-            }
+            const audioContext = window.AudioContext || window.webkitAudioContext 
+            const audioCtx = new audioContext()
+            audioContextRef.current = audioCtx
 
-            const permission = await VoiceRecorder.requestAudioRecordingPermission()
-            if(!permission.value){
-                return alert("Permissão Negada!")
-            }
+            const stream = await navigator.mediaDevices.getUserMedia({ audio : true })
+            mediaStreamRef.current = stream
 
-            setSeconds(0)
+            audioChunksRef.current = []
             setAudioData(null)
-            await VoiceRecorder.startRecording()
-            await startSetupWebAudio()
-            setRecordStatus('recording')
-            setText("Gravando")
+            setSeconds(0)
+
+            const analyzer = audioCtx.createAnalyser()
+            analyzer.fftSize = 256
+            analyzerRef.current = analyzer
+
+            const source = audioCtx.createMediaStreamSource(stream)
+            source.connect(analyzer)
+
+            if(audioCtx.state === 'suspended'){
+                await audioCtx.resume()
+            }
+            drawSpec()
+
+            const mediaRecorder = new MediaRecorder(stream)
+            mediaRecorderRef.current = mediaRecorder
+
+            mediaRecorder.ondataavailable = (event) => {
+                if (event.data.size > 0){
+                    audioChunksRef.current.push(event.data)
+                }
+            }
+
+            mediaRecorder.onstop = () => {
+                const audioBlob = new Blob(audioChunksRef.current, { type : mediaRecorder.mimeType || 'audio/webm'})
+                setAudioMimeType(audioBlob.type)
+
+                const reader = new FileReader()
+                reader.readAsDataURL(audioBlob)
+                reader.onloadend = () => {
+                    const result = reader.result
+                    if (result && result.includes(',')){
+                        const base64Data = reader.result.split(',')[1]
+                        setAudioData(base64Data)
+                    }
+                }
+
+                if (mediaStreamRef.current){
+                    mediaStreamRef.current.getTracks().forEach((track) => track.stop())
+                    mediaStreamRef.current = null
+                }
+            }
+
+        mediaRecorder.start()
+        setText("Gravando")
+        setRecordStatus('recording')
         }catch(err){
             console.error("Error in start recording:", err)
+            alert("Permissão de microfone negada ou erro no dispositivo!")
         }
     }
 
-    const pauseRecord = async () => {
-        try{
-            setText("Pausado")
-            await VoiceRecorder.pauseRecording()
-            if (animationRef.current){
-                cancelAnimationFrame(animationRef.current)
-            }
-
-            if (canvasRef.current) {
-                const canvasCtx = canvasRef.current.getContext('2d');
-                canvasCtx.fillStyle = '#1e1e1e';
-                canvasCtx.fillRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-            }
-            setRecordStatus('paused')
-        }catch(err){
-            console.error("Error in pause record: ", err)
+    const pauseRecord = () => {
+        if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording'){
+            mediaRecorderRef.current.pause()
         }
+        if (animationRef.current) cancelAnimationFrame(animationRef.current)
+        setRecordStatus('paused')
+        setText('Pausado')
     }
 
     const continueRecord = async () => {
-        try{
-            setText("Gravando")
-            await VoiceRecorder.resumeRecording()
-
-            drawSpec()
-
-            setRecordStatus('recording')
-        }catch(err){
-            console.error("Error in continue record: ", err)
+        if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'paused'){
+            mediaRecorderRef.current.resume()
         }
+        drawSpec()
+        setText('Gravando')
+        setRecordStatus('recording')
     }
 
-    const finishRecord = async () => {
+    const finishRecord = () => {
         setText("Gravação Concluída")
         setRecordStatus('finished')
-        await finishAll(false)
+        finishAll(false)
     }
 
-    const finishAll = async (isCleanUp = false) => {
+    const finishAll = (isCleanUp = false) => {
         clearInterval(timerRef.current)
 
-        if (animationRef.current) cancelAnimationFrame(animationRef.current)
-        if (mediaStreamRef.current) mediaStreamRef.current.getTracks().forEach((track) => track.stop())
-        if (audioContextRef.current && audioContextRef.current.state !== 'closed') audioContextRef.current.close()
+        if (animationRef.current){
+            cancelAnimationFrame(animationRef.current)
+            animationRef.current = null
+        } 
+
+        if (audioContextRef.current && audioContextRef.current.state !== 'closed'){
+             audioContextRef.current.close()
+             audioContextRef.current = null
+        }
         
         if (canvasRef.current){
             const canvasCtx = canvasRef.current.getContext('2d')
             canvasCtx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
         }
 
-        if (!isCleanUp){
-            try{
-                const result = await VoiceRecorder.stopRecording()
-                setAudioData(result.value.recordDataBase64)
-            }catch(err){
-                console.log("Recording already stopped or error: ", err)
+        if (isCleanUp){
+            setAudioData(null)
+            audioChunksRef.current = []
+            if (mediaStreamRef.current){
+                mediaStreamRef.current.getTracks().forEach((track) => track.stop())
+                mediaStreamRef.current = null
             }
+        }
+
+        if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive'){
+            mediaRecorderRef.current.stop()
         }
     }
 
@@ -185,7 +203,7 @@ const Recorder = ({onComeBack, onSendAudio}) => {
         return `${String(min).padStart(2, '0')}:${String(seg).padStart(2, '0')}`;
     }
 
-    const base64ToFile = (base64String, fileName) => {
+    const base64ToFile = (base64String) => {
         const byteCharacters = atob(base64String)
         const byteNumbers = new Array(byteCharacters.length)
 
@@ -195,41 +213,59 @@ const Recorder = ({onComeBack, onSendAudio}) => {
 
         const byteArray = new Uint8Array(byteNumbers)
 
-        const blob = new Blob([byteArray], { type : 'audio/m4a'})
-        return new File([blob], fileName, { type : 'audio/m4a'})
+        const blob = new Blob([byteArray], { type : audioMimeType})
+        const extension = audioMimeType.includes('mp4') ? '.mp4' : '.webm'
+        return new File([blob], `gravacao_mindclass${extension}`, { type : audioMimeType})
     }
 
     const handleSendAudio = () => {
         if (!audioData) return
 
-        const audioFile = base64ToFile(audioData, "mindclass_record.m4a")
+        const audioFile = base64ToFile(audioData)
         onSendAudio(audioFile)
     }
 
+    const handleToHome = async () => {
+        finishAll(true)
+        onComeBack()
+    }
+
     return (
-        <div id='recorderContainer'>
-            <div id="timer">
-                {timeFormat(seconds)}
+        <div id="recorderMain">
+            <div id='recorderContainer'>
+                <div id="timer">
+                    {timeFormat(seconds)}
+                </div>
+                <p id='recordStatusText'>{text}</p>
+
+                {(recordStatus === 'recording' || recordStatus === 'paused' || recordStatus === 'idle') && <canvas id='canvasRef' ref={canvasRef}/>}
+
+                {(recordStatus === 'finished' && audioData) && <audio
+                controls
+                src={`data:audio/aac; base64, ${audioData}`}
+                style={{width : '100%', outline : 'none'}}
+                >
+                Seu navegador não suporta o elemento áudio!
+                </audio>}
+
+                <div id="recordButtons">
+                    {recordStatus === 'idle' && <button id='startRecordButton' className='buttonsActive' onClick={startRecord}><FaMicrophone /></button>}
+
+                    {recordStatus === 'recording' && <button id='pauseRecordButton' className='buttonsActive' onClick={pauseRecord}><CiPause1 /></button>}
+
+                    {recordStatus === 'recording' && <button id='finishRecordButton' className='buttonsActive' onClick={finishRecord}><FaStop /></button>}
+
+                    {recordStatus === 'paused' && <button id='continueRecordButton' className='buttonsActive' onClick={continueRecord}><FaPlay /></button>}
+
+                    {recordStatus === 'paused' && <button id='finishRecordButton' className='buttonsActive' onClick={finishRecord}><FaStop /></button>}
+
+                    {recordStatus === 'finished' && <button id='discardRecordButton' className='buttonsActive' onClick={discardRecord}><FaArrowLeft size={20}/> Descartar Áudio</button>}
+
+                    {recordStatus === 'finished' && <button id='sendToLLMButton' className='buttonsActive' onClick={handleSendAudio}><IoIosSend size={25}/> Enviar Áudio</button>}
+                </div>
             </div>
-            <p id='recordStatusText'>{text}</p>
 
-            <canvas id='canvasRef' ref={canvasRef}/>
-
-            <div id="recordButtons">
-                {recordStatus === 'idle' && <button id='startRecordButton' className='buttonsActive' onClick={startRecord}><FaMicrophone /></button>}
-
-                {recordStatus === 'recording' && <button id='pauseRecordButton' className='buttonsActive' onClick={pauseRecord}><CiPause1 /></button>}
-
-                {recordStatus === 'recording' && <button id='finishRecordButton' className='buttonsActive' onClick={finishRecord}><FaStop /></button>}
-
-                {recordStatus === 'paused' && <button id='continueRecordButton' className='buttonsActive' onClick={continueRecord}><FaPlay /></button>}
-
-                {recordStatus === 'paused' && <button id='finishRecordButton' className='buttonsActive' onClick={finishRecord}><FaStop /></button>}
-
-                {recordStatus === 'finished' && <button id='discardRecordButton' className='buttonsActive' onClick={discardRecord}><FaArrowLeft size={20}/> Descartar Áudio</button>}
-
-                {recordStatus === 'finished' && <button id='sendToLLMButton' className='buttonsActive' onClick={handleSendAudio}><IoIosSend size={25}/> Enviar Áudio</button>}
-            </div>
+            <button id='recordToHomeButton' className='buttonsActive' onClick={handleToHome}><FaArrowLeft size={20}/> Voltar para a área de upload</button>
         </div>
     )
 }

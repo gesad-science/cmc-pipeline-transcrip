@@ -274,6 +274,12 @@ form button:hover {
     background-color: #2235619c;
 }
 
+#recorderMain{
+    display: flex;
+    flex-direction: column;
+    gap: 3vh;
+}
+
 #recorderContainer{
     display: flex;
     flex-direction: column;
@@ -426,6 +432,28 @@ form button:hover {
     border: none;
     border-radius: 5px;
     color: #fff;
+}
+
+audio{
+    margin: 5vh 0;
+}
+
+#recordToHomeButton{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    width: fit-content;
+    margin: 0 auto 0 auto;
+    background-color: transparent;
+    color: #fff;
+    text-align: center;
+    border: none;
+    align-items: center;
+    padding: 0;
+    text-decoration: underline;
+    font-size: 14px;
+    cursor: pointer;
 }
 
 #spinnerDiv{
