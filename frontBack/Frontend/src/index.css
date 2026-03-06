@@ -15,29 +15,27 @@
 }
 
 body {
-    margin: 0;
     background: #0F172A;
     min-height: 100vh;
     color: #dedede;
 }
 
 #root {
-    min-height: 100vh;
+    height: 100%;
+    max-height: 100vh;
 }
 
 #App{
     display: flex;
     justify-content: center;
-    min-height: 100vh;
+    max-height: 100vh;
     align-items: center;
-    padding: 20px;
-    top: 0px;
 }
 
 header{
     text-align: center;
     align-items: center;
-    margin: 15px 0 5vh 0;
+    margin: 5vh 0 5vh 0;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -61,16 +59,15 @@ header{
 
 header p{
     font-size: 15px;
-    margin: 0 auto 0 auto;
-    width: 75vh;
+    width: 50vw;
     text-align: center;
     color: #a7a7a7;
 }
 
 #dropContainer { /* Container da área de drop do áudio */
     width: 100%;
-    max-width: 85vh;
-    margin: 0 auto 30px auto
+    max-width: 45vw;
+    margin: 0 auto 4vh auto
 }
 
 .dropzone { /* Local do drop do áudio */
@@ -170,65 +167,13 @@ header p{
     cursor: pointer;
 }
 
-#contents-list{
-    display: flex;
-    gap: 40px;
-    margin: 0 auto 0 auto;
-    width: 100%;
-    max-width: 85vh;
-    color: #fff;
-    justify-content: space-between;
-    margin-top: 30px;
-}
-
-.contents-home-value{
-    display: flex;
-    flex: 1;
-    height: 140px;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background-color: #ffffff1c;
-    border: 2px solid #949494;
-    border-radius: 16px;
-    padding: 20px;
-}
-.contents-home-value p{
-    font-size: 10px;
-    text-align: center;
-    margin-top: 10px;
-}
-.contents-home-value h3{
-    font-size: 15px;
-    text-align: center;
-    font-weight: 600;
-}
-
-.contents-img {
-    font-size: 25px;
-}
-
-#orLine {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    max-width: 100vh;
-    margin: 20px 0;
-}
-
-.recordLine {
-    border: 1px solid rgb(82, 79, 94);
-    margin: 10px 0;
-    width: 47%;
-}
-
 form{
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 0 auto 0 auto;
     width: 100%;
-    max-width: 85vh;
+    max-width: 45vw;
 }
 
 form button {
@@ -247,10 +192,24 @@ form button:hover {
     background-color: #2980b9;
 }
 
+#orLine {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 45vw;
+    margin: 20px auto;
+}
+
+.recordLine {
+    border: 1px solid rgb(82, 79, 94);
+    margin: 10px 0;
+    width: 47%;
+}
+
 #divButtonRecord {
     width: 100%;
-    max-width: 100vh;
-    margin-bottom: 20px;
+    max-width: 45vw;
+    margin: 0 auto 20px auto;
 }
 
 #buttonRecord {
@@ -274,8 +233,47 @@ form button:hover {
     background-color: #2235619c;
 }
 
+#contents-list{
+    display: flex;
+    gap: 5vw;
+    margin: 0 auto 0 auto;
+    width: 100%;
+    max-width: 45vw;
+    height: 15vh;
+    color: #fff;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+.contents-home-value{
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff1c;
+    border: 2px solid #949494;
+    border-radius: 16px;
+    padding: 5vh 2vw;
+}
+.contents-home-value p{
+    font-size: 10px;
+    text-align: center;
+    margin-top: 10px;
+}
+.contents-home-value h3{
+    font-size: 15px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.contents-img {
+    font-size: 25px;
+}
+
 #recorderMain{
     display: flex;
+    align-items: center;
     flex-direction: column;
     gap: 3vh;
 }
@@ -285,7 +283,7 @@ form button:hover {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    max-width: 85vh;
+    max-width: 45vw;
     width: 100%;
     padding: 5vh 5vh;
     background-color: #1a1a1a;
@@ -307,7 +305,7 @@ form button:hover {
 
 #canvasRef{
     width: 100%;
-    height: 100px;
+    height: 130px;
     background-color: '#1e1e1e';
     border-radius: '8px';
     margin-bottom: 2vh;
@@ -317,7 +315,7 @@ form button:hover {
     display: flex; 
     justify-content: center;
     width: 100%;
-    max-width: 85vh;
+    max-width: 45vh;
     gap: 10px; 
 }
 
@@ -459,6 +457,7 @@ audio{
 #spinnerDiv{
     display: flex;
     width: 100%;
+    margin-top: 45vh;
     justify-content: center;
     align-items: center;
     flex-direction: column;
@@ -481,9 +480,9 @@ audio{
 
 #errorMessage {
     text-align: center;
-    margin-top: 30px;
+    margin: 30px auto 0 auto;
     width: 100%;
-    max-width: 85vh;
+    max-width: 45vw;
     font-size: 16px;
     color: #e74c3c;
     background: #fbeae8;
@@ -493,7 +492,8 @@ audio{
 }
 
 #resultsContainer {
-    max-height: 100vh;
+    min-height: 100vh;
+    min-width: 80vw;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -501,10 +501,9 @@ audio{
 
 #abstract{
     background: #fff;
-    width: 100%;
-    max-width: 100vh;
+    width: 60%;
     height: 70vh;
-    padding: 40px;
+    padding: 35px;
     border-radius: 20px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
     overflow: auto;
@@ -541,7 +540,7 @@ audio{
 #quiz{
     background: #fff;
     color: #000;
-    width: 130vh;
+    width: 60%;
     height: 70vh;
     overflow: auto;
     padding: 40px;
@@ -564,9 +563,7 @@ audio{
 #answers{
     color: #000;
     background: #fff;
-    width: 100vh;
-    min-height: auto;
-    max-height: 60vh;
+    width: 40%;
     padding: 40px;
     border-radius: 20px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
@@ -588,7 +585,7 @@ audio{
     background: #fff;
     padding: 40px;
     border-radius: 20px;
-    width: 130vh;
+    width: 60%;
     height: 70vh;
     color: #000;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);    
